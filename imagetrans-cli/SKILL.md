@@ -186,10 +186,17 @@ Common built-in templates include `manga` (for manga/comics translation) and `do
 (for document/PDF translation). The `templateDir` argument can be an absolute path or
 a path relative to the ImageTrans working directory.
 
-| Template | Path (relative to `<IMAGETRANS_DIR>`) | Use case |
-|----------|---------------------------------------|----------|
-| manga    | `templates/manga`                     | Manga / comics pages |
-| document | `templates/document`                  | Documents / PDFs |
+| Template | Path (relative to `<IMAGETRANS_DIR>`) | Use case | Source→Target |
+|----------|---------------------------------------|----------|---------------|
+| `manga` | `templates/manga` | Manga / comics pages | ja→? |
+| `manga-ja2en` | `templates/manga-ja2en` | Japanese to English manga | ja→en |
+| `manga-ja2zh` | `templates/manga-ja2zh` | Japanese to Chinese manga | ja→zh |
+| `comics` | `templates/comics` | Western comics | en→? |
+| `webtoon` | `templates/webtoon` | Korean/Chinese webtoons | ? |
+| `document` | `templates/document` | Document / PDF translation | ? |
+| `cg` | `templates/cg` | Computer graphics / game screenshots | ? |
+| `cg-ja2zh` | `templates/cg-ja2zh` | Japanese to Chinese game screenshots | ja→zh |
+| `chinese-manhua` | `templates/chinese-manhua` | Chinese manhua | zh→? |
 
 **Example — Translate a manga page (Windows):**
 ```bash
@@ -367,19 +374,8 @@ template-name/
 
 ### Built-in Templates
 
-ImageTrans ships with these templates in `templates/`:
-
-| Template | Use Case | Source→Target |
-|----------|----------|---------------|
-| `manga` | Japanese manga translation | ja→? |
-| `manga-ja2en` | Japanese to English manga | ja→en |
-| `manga-ja2zh` | Japanese to Chinese manga | ja→zh |
-| `comics` | Western comics | en→? |
-| `webtoon` | Korean/Chinese webtoons | ? |
-| `document` | Document translation with panel detection | ? |
-| `cg` | Computer graphics / game screenshots | ? |
-| `cg-ja2zh` | Japanese to Chinese game screenshots | ja→zh |
-| `chinese-manhua` | Chinese manhua | zh→? |
+See the templates table in [Mode 1 (Template Mode)](#mode-1-template-mode-recommended-for-batch-processing) — it lists all built-in
+templates with their paths, use cases, and source→target languages.
 
 ### Creating a Custom Template
 
