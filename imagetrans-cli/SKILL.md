@@ -181,6 +181,16 @@ ImageTrans has several CLI invocation modes, selected by the number and content 
 **Use this mode when:** You want to process new images/PDFs with zero manual setup.
 The template provides all configuration — OCR engine, translation engine, workflow steps.
 
+**Templates directory:** Templates are stored in `<IMAGETRANS_DIR>/templates/`.
+Common built-in templates include `manga` (for manga/comics translation) and `document`
+(for document/PDF translation). The `templateDir` argument can be an absolute path or
+a path relative to the ImageTrans working directory.
+
+| Template | Path (relative to `<IMAGETRANS_DIR>`) | Use case |
+|----------|---------------------------------------|----------|
+| manga    | `templates/manga`                     | Manga / comics pages |
+| document | `templates/document`                  | Documents / PDFs |
+
 **Example — Translate a manga page (Windows):**
 ```bash
 cd /path/to/ImageTrans
@@ -198,7 +208,7 @@ jre/bin/java.exe \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "Objects/templates/manga" "C:/manga/page01.jpg"
+  -jar ImageTrans.jar "templates/manga" "C:/manga/page01.jpg"
 ```
 
 **Example — Translate a manga page (Linux, headless):**
@@ -219,14 +229,14 @@ jre/bin/java \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "Objects/templates/manga" "/home/user/manga/page01.jpg"
+  -jar ImageTrans.jar "templates/manga" "/home/user/manga/page01.jpg"
 ```
 
 **Example — Translate a PDF document:**
 ```bash
 cd /path/to/ImageTrans
 # Use document template for PDF processing
-... -jar ImageTrans.jar "Objects/templates/document" "C:/docs/report.pdf"
+... -jar ImageTrans.jar "templates/document" "C:/docs/report.pdf"
 ```
 
 ---
@@ -357,7 +367,7 @@ template-name/
 
 ### Built-in Templates
 
-ImageTrans ships with these templates in `Objects/templates/`:
+ImageTrans ships with these templates in `templates/`:
 
 | Template | Use Case | Source→Target |
 |----------|----------|---------------|
@@ -393,7 +403,7 @@ To create a template for a new language pair or use case:
 
 3. **`custom_workflow.json`** — Define your workflow (see Workflow Configuration below).
 
-4. **`1.itp`** — Copy from `Objects/general_template/1.itp` and adjust settings
+4. **`1.itp`** — Copy from `general_template/1.itp` and adjust settings
    (OCR engine, inpainting options, etc.).
 
 5. **`preferences.conf`** (optional) — Override app preferences:
@@ -703,7 +713,7 @@ jre/bin/java.exe \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "Objects/templates/manga-ja2en" "C:/manga/chapter01/"
+  -jar ImageTrans.jar "templates/manga-ja2en" "C:/manga/chapter01/"
 ```
 
 **Linux (headless):**
@@ -724,7 +734,7 @@ jre/bin/java \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "Objects/templates/manga-ja2en" "/home/user/manga/chapter01/"
+  -jar ImageTrans.jar "templates/manga-ja2en" "/home/user/manga/chapter01/"
 ```
 
 This imports all images from the directory, runs the manga-ja2en workflow, and exits.
@@ -737,7 +747,7 @@ cd /path/to/ImageTrans
 # Step 1: Use document template to process the PDF
 jre/bin/java.exe \
   ... \
-  -jar ImageTrans.jar "Objects/templates/document" "C:/docs/japanese_report.pdf"
+  -jar ImageTrans.jar "templates/document" "C:/docs/japanese_report.pdf"
 ```
 
 If the workflow includes `Export PDF`, the output PDF is generated automatically.
@@ -789,7 +799,7 @@ foreach ($pdf in $pdfs) {
     --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED `
     --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED `
     --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED `
-    -jar ImageTrans.jar "Objects/templates/document" $pdf.FullName
+    -jar ImageTrans.jar "templates/document" $pdf.FullName
 }
 ```
 
@@ -812,7 +822,7 @@ for pdf in /home/user/pdfs/*.pdf; do
     --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
     --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
     --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-    -jar ImageTrans.jar "Objects/templates/document" "$pdf"
+    -jar ImageTrans.jar "templates/document" "$pdf"
 done
 ```
 
@@ -832,7 +842,7 @@ When you need custom settings not covered by templates:
 
 1. Copy a template directory:
    ```
-   Objects/general_template/ → C:/my_project/
+   general_template/ → C:/my_project/
    ```
 
 2. Edit `settings.json`:
