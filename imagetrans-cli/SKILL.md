@@ -332,30 +332,6 @@ then send JSON messages:
 
 The server responds with events on the same WebSocket connection.
 
----
-
-### Mode 4: Silent Translator Mode (5 Arguments)
-
-```
-<JAVA> ... -jar ImageTrans.jar <configJSON> <usePreviousData> <detectOnly> <outputDir> <imageListFile>
-```
-
-**Arguments:**
-- `configJSON`: Path to a JSON config file with OCR/MT parameters (see SilentTranslator params)
-- `usePreviousData`: `"true"` or `"false"` — reuse existing OCR data
-- `detectOnly`: `"true"` or `"false"` — only detect text areas, skip translation
-- `outputDir`: Directory for output files
-- `imageListFile`: Path to a file containing a JSON array of image paths
-
-**Behavior:**
-1. Reads the config JSON
-2. Processes each image in the list
-3. Exits when complete
-
-**Use this mode when:** You need fine-grained control over OCR/MT parameters
-and don't want to use a project template.
-
----
 
 ### Mode 0: Open Project (1 Argument, GUI Mode)
 
@@ -687,7 +663,7 @@ ImageTrans supports these export formats, all usable from workflows:
 | **Translated images** | `Generate translated pictures` | Rendered images with translated text in place |
 | **PDF** | `Export PDF` | Searchable PDF with text layer and optional image layer |
 | **Markdown** | `Export markdown` | Markdown with extracted text, supports page numbering |
-| **TXT** | (GUI/SilentTranslator) | Plain text export |
+| **TXT** | (GUI) | Plain text export |
 | **XLSX** | (GUI) | Spreadsheet with source/target columns |
 | **DOCX** | (GUI) | Word document with table |
 | **XLIFF** | (GUI) | XLIFF translation exchange format |
