@@ -32,7 +32,7 @@ sequence of operations defined in `custom_workflow.json`.
 
 ## Prerequisites
 
-- **Java Runtime**: JRE is bundled at `jre/bin/java.exe` (Windows), `jre/bin/java` (Linux), or `jdk-23/Contents/Home/bin/java` (macOS)
+- **Java Runtime**: JRE is bundled at `jre/bin/java.exe` (Windows), `jre/bin/java` (Linux), or `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/bin/java` (macOS)
 - **ImageTrans.jar**: The main application JAR in the ImageTrans installation directory
 - **Working directory**: All commands must run from the ImageTrans installation directory (where `ImageTrans.jar` lives)
 
@@ -66,7 +66,7 @@ shipped in the ImageTrans directory.
 |----------|-------------|--------------|
 | Windows  | `jre/bin/java.exe` | `jre/javafx/lib` |
 | Linux    | `jre/bin/java` | `jre/javafx/lib` |
-| macOS    | `jdk-23/Contents/Home/bin/java` | `jdk-23/Contents/Home/javafx/lib` |
+| macOS    | `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/bin/java` | `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/javafx/lib` |
 
 **Important**: When building the command for the user, always use the correct paths
 for their OS. Verify the Java path exists before running. If the bundled JRE is not
@@ -836,7 +836,7 @@ When you need custom settings not covered by templates:
 Verify the bundled JRE exists:
 - Windows: `jre/bin/java.exe`
 - Linux: `jre/bin/java`
-- macOS: `jdk-23/Contents/Home/bin/java`
+- macOS: `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/bin/java`
 
 If missing, install a Java 11+ JDK with JavaFX and use system `java`.
 
