@@ -764,6 +764,26 @@ is pre-configured. When `false`, output files are saved alongside each image.
 
 ### Recipe 1: Translate a Manga Chapter from Japanese to English
 
+**Preparation** — the default `manga-ja2en` template workflow only includes
+`Text detection`, `Merge areas`, `Sort`, and `Translation`. It does **not** include
+`Generate translated pictures`. Before running the CLI, edit
+`templates/manga-ja2en/custom_workflow.json` and add the step:
+
+```json
+[
+  {
+    "name": "default",
+    "flow": [
+      "Text detection",
+      "Merge areas",
+      "Sort",
+      "Translation",
+      "Generate translated pictures"
+    ]
+  }
+]
+```
+
 **Windows:**
 ```bash
 cd /path/to/ImageTrans
@@ -806,7 +826,8 @@ jre/bin/java \
 ```
 
 This imports all images from the directory, runs the manga-ja2en workflow, and exits.
-Output files (translated images) will be in the same directory.
+Translated images are saved to an `out` folder inside the project directory
+(e.g., `C:/manga/chapter01/out/`).
 
 ### Recipe 2: Translate a PDF Document and Export as Searchable PDF
 
