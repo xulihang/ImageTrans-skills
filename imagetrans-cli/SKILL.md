@@ -174,7 +174,7 @@ ImageTrans has several CLI invocation modes, selected by the number and content 
 
 **Behavior:**
 1. Copies the `.itp` file and supporting files from `templateDir` to the input's parent folder
-2. Imports the image(s) or PDF pages
+2. Imports the image(s) or PDF pages (PDF import may require pre-configured options, see [Configuring PDF Import for CLI/Batch Use](#configuring-pdf-import-for-clibatch-use))
 3. Applies `settings.json` (source/target language, etc.) and `preferences.conf` if present
 4. Runs the default workflow (index 0 from `custom_workflow.json`)
 5. Saves the project and exits automatically
@@ -734,6 +734,55 @@ No additional settings are required.
 If these settings are not provided in CLI mode, the export steps will either show a GUI
 dialog (blocking) or fail silently.
 
+### Configuring PDF Import for CLI/Batch Use
+
+When importing a PDF file via CLI (template mode), you need to configure the import
+options beforehand to avoid GUI dialogs blocking the process:
+
+In the project's `settings.json` (or template's), set `enable_pdf_import_options` to `true`
+and provide the options in `pdf_import_options`:
+
+```json
+{
+  "enable_pdf_import_options": true,
+  "pdf_import_options": "{\"extractMode\":false,\"dpi\":300,\"extractText\":true,\"wordLevel\":false,\"pageStart\":1,\"pageEnd\":10}"
+}
+```
+
+Note: `pdf_import_options` is a **JSON string** (serialized JSON), not a nested object.
+If `enable_pdf_import_options` is `false` or the options string is invalid/missing,
+a GUI dialog will pop up and block the CLI process.
+
+#### PDF Import Options Reference
+
+The `pdf_import_options` value is a JSON string containing:
+
+| Option | Type | Values | Description |
+|--------|------|--------|-------------|
+| `extractMode` | bool | `true` | **Extract mode** — extract text and images directly from PDF without rendering pages as images. Text is obtained from the PDF's internal text stream. |
+| | | `false` | **Render mode** — render PDF pages as images first, then run OCR on the images. Use this for scanned PDFs or when text extraction is unreliable. |
+| `dpi` | int | e.g., `300` | Resolution (DPI) for rendering PDF pages to images. Only applies in render mode (`extractMode: false`). Higher values give better quality but larger images and slower processing. Typical range: 150–600. |
+| `extractText` | bool | `true`/`false` | Whether to extract text from the PDF. In extract mode, this gets text from the PDF text stream. In render mode, this controls whether OCR is run on the rendered images. |
+| `wordLevel` | bool | `true`/`false` | **Word-level extraction** — extract text at word granularity instead of line/block level. Only applicable when `extractText` is `true`. Gives finer-grained text boxes. |
+| `pageStart` | int | e.g., `1` | First page to import (1-based). If omitted or `0`, starts from the first page. |
+| `pageEnd` | int | e.g., `10` | Last page to import (1-based). If omitted or less than `pageStart`, imports to the last page. |
+
+**Example — Render mode for scanned PDFs (no text layer):**
+```json
+{
+  "enable_pdf_import_options": true,
+  "pdf_import_options": "{\"extractMode\":false,\"dpi\":300,\"extractText\":false}"
+}
+```
+
+**Example — Extract mode for digital PDFs with text layer:**
+```json
+{
+  "enable_pdf_import_options": true,
+  "pdf_import_options": "{\"extractMode\":true,\"extractText\":true,\"wordLevel\":false}"
+}
+```
+
 ### PDF Export Options Reference
 
 The `pdf_export_options` value is a JSON string (see previous section for setup) containing:
@@ -860,15 +909,17 @@ Then:
 1. Edit `/tmp/document-custom/custom_workflow.json` and add `"Export PDF"` to the end of
    the `flow` array (same pattern as Recipe 1).
 
-2. Edit `/tmp/document-custom/settings.json` and add PDF export options so the CLI runs
+2. Edit `/tmp/document-custom/settings.json` and add PDF import and export options so the CLI runs
    without popping up a GUI dialog:
    ```json
    {
+     "enable_pdf_import_options": true,
+     "pdf_import_options": "{\"extractMode\":true,\"extractText\":true,\"wordLevel\":false}",
      "enable_pdf_export_options": true,
      "pdf_export_options": "{\"textMode\":1,\"imageMode\":1,\"fontPath\":\"\",\"lookupFontFile\":false,\"displayText\":false,\"addBookmarks\":false,\"enableImageCompression\":false,\"imageFormat\":0,\"jpegQuality\":85,\"adaptive\":false,\"removeNonTextPart\":false,\"byTextArea\":false}"
    }
    ```
-   See [PDF Export Options Reference](#pdf-export-options-reference) for details on each option.
+   See [PDF Import Options Reference](#pdf-import-options-reference) and [PDF Export Options Reference](#pdf-export-options-reference) for details on each option.
 
 Then use the temporary copy as the template path in the CLI command below.
 
