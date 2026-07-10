@@ -466,7 +466,7 @@ one named workflow with its sequence of operations.
 
 | Value | Method | Description |
 |-------|--------|----------|
-| `0` | OCR-based | Use OCR engines' text detection capabilities and recognize text at the same time |
+| `0` | OCR-based | Use OCR engines' text detection capabilities and recognize text at the same time. Text recognition workflow is no longer needed. |
 | `1` | Heuristic | Use connected-components to find text regions (not recommended) |
 | `2` | Scene text detection | Use local scene text detection server (not recommended) |
 | `3` | Balloon detection | Manga/comics speech bubbles or text lines according to different object detection models |
