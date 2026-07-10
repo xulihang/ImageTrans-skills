@@ -122,15 +122,18 @@ found, fall back to system `java` and check for JavaFX availability.
 
 ### Headless Mode (No GUI Windows)
 
-To run ImageTrans without showing any GUI windows — useful for batch processing,
-server environments, or automated pipelines — add the JavaFX headless platform flag:
+**Important:** The bundled JavaFX is version 23, which does **not** support headless
+mode. `-Dglass.platform=headless` requires **JavaFX 26 or later**. Do not use this
+flag with the bundled JRE — it will cause errors.
+
+If you are using a custom Java runtime with JavaFX 26+, you can add the flag to
+suppress all JavaFX windows:
 
 ```
 -Dglass.platform=headless
 ```
 
-This suppresses all JavaFX windows. The CLI process runs purely in the background
-and exits when the workflow completes. Place it alongside the other `-D` flags:
+Place it alongside the other `-D` flags:
 
 ```bash
 <JAVA_PATH> \
@@ -141,19 +144,17 @@ and exits when the workflow completes. Place it alongside the other `-D` flags:
   -jar ImageTrans.jar <ARGS>
 ```
 
-**When to use headless mode:**
+**When headless mode works (JavaFX 26+ only):**
 - Batch processing — no need to see the GUI while images are being processed
 - CI/CD pipelines or automated scripts
 - Linux servers without X11/Wayland, Docker containers, WSL without an X server
 - Windows/macOS when you want the process to run silently in the background
 
 **When NOT to use headless mode:**
+- With the bundled JavaFX 23 — not supported, will error
 - When you need to visually inspect or manually adjust results
 - When using the full GUI for interactive work
 - Server Mode may not function fully in headless mode since JavaFX windows are used internally
-
-Note: headless mode works on **all platforms** (Windows, Linux, macOS). It works
-particularly well with Template Mode and Workflow Mode where no user interaction is needed.
 
 ## CLI Modes
 
@@ -233,12 +234,11 @@ jre/bin/java.exe \
   -jar ImageTrans.jar "templates/manga" "C:/manga/page01.jpg"
 ```
 
-**Example — Translate a manga page (Linux, headless):**
+**Example — Translate a manga page (Linux):**
 ```bash
 cd /path/to/ImageTrans
 jre/bin/java \
   -Djava.library.path=./ \
-  -Dglass.platform=headless \
   --module-path jre/javafx/lib \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -819,12 +819,11 @@ jre/bin/java.exe \
   -jar ImageTrans.jar "/tmp/manga-ja2en-custom" "C:/manga/chapter01/"
 ```
 
-**Linux (headless):**
+**Linux:**
 ```bash
 cd /path/to/ImageTrans
 jre/bin/java \
   -Djava.library.path=./ \
-  -Dglass.platform=headless \
   --module-path jre/javafx/lib \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -890,12 +889,11 @@ jre/bin/java.exe \
   -jar ImageTrans.jar "/tmp/document-custom" "C:/docs/japanese_report.pdf"
 ```
 
-**Linux (headless):**
+**Linux:**
 ```bash
 cd /path/to/ImageTrans
 jre/bin/java \
   -Djava.library.path=./ \
-  -Dglass.platform=headless \
   --module-path jre/javafx/lib \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -964,13 +962,12 @@ foreach ($pdf in $pdfs) {
 }
 ```
 
-**Linux bash (headless):**
+**Linux bash:**
 ```bash
 cd /path/to/ImageTrans
 for pdf in /home/user/pdfs/*.pdf; do
   jre/bin/java \
     -Djava.library.path=./ \
-    -Dglass.platform=headless \
     --module-path jre/javafx/lib \
     --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
     --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -1041,10 +1038,11 @@ native libraries (`.dll` on Windows, `.so` on Linux, `.dylib` on macOS) exist in
 the ImageTrans installation directory.
 
 **Headless mode issues:**
-If you see errors about `java.awt.HeadlessException` or `GraphicsEnvironment.isHeadless()`,
-add `-Dglass.platform=headless` to the JVM arguments. This applies to all platforms.
-Conversely, if Server Mode fails to start in headless mode, remove this flag and ensure
-a display is available (e.g., with `xvfb-run` on Linux servers).
+`-Dglass.platform=headless` requires **JavaFX 26 or later**. The bundled JRE ships
+with JavaFX 23, which does not support this flag. If you see errors like
+`java.awt.HeadlessException` or `GraphicsEnvironment.isHeadless()`, remove the
+`-Dglass.platform=headless` flag. Only use it if you have manually upgraded to
+JavaFX 26+. On Linux servers without a display, use `xvfb-run` instead.
 
 **Application exits with error code 1:**
 Check the log output. Common causes:
