@@ -767,20 +767,16 @@ is pre-configured. When `false`, each page gets its own `.md` file in the `out` 
 **Preparation** — the default `manga-ja2en` template workflow only includes
 `Text detection`, `Merge areas`, `Sort`, and `Translation`. It does **not** include
 `Generate translated pictures`. Before running the CLI, edit
-`templates/manga-ja2en/custom_workflow.json` and add the step:
+`templates/manga-ja2en/custom_workflow.json` and add
+`"Generate translated pictures"` to the end of the `flow` array:
 
 ```json
-[
-  {
-    "name": "default",
-    "flow": [
-      "Text detection",
-      "Merge areas",
-      "Sort",
-      "Translation",
-      "Generate translated pictures"
-    ]
-  }
+"flow": [
+  "Text detection",
+  "Merge areas",
+  "Sort",
+  "Translation",
+  "Generate translated pictures"
 ]
 ```
 
