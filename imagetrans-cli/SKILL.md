@@ -266,12 +266,13 @@ cd /path/to/ImageTrans
 ### Mode 2: Workflow Mode (Run Workflow on Existing Project)
 
 ```
-<JAVA> ... -jar ImageTrans.jar <projectPath> <workflowIndex>
+<JAVA> ... -jar ImageTrans.jar <projectPath> <workflowIndex> workflow
 ```
 
 **Arguments:**
 - `projectPath`: Path to an existing `.itp` project file
 - `workflowIndex`: Integer index into the `custom_workflow.json` array (0-based)
+- `workflow`: The literal string `"workflow"` — **required**, distinguishes this from Mode 0 (GUI open)
 
 **Behavior:**
 1. Opens the existing project
@@ -285,12 +286,12 @@ export-only workflow.
 
 **Example — Run workflow #2 on an existing project:**
 ```bash
-... -jar ImageTrans.jar "C:/manga/project.itp" 2
+... -jar ImageTrans.jar "C:/manga/project.itp" 2 workflow
 ```
 
 **Example — Run the first (default) workflow:**
 ```bash
-... -jar ImageTrans.jar "C:/manga/project.itp" 0
+... -jar ImageTrans.jar "C:/manga/project.itp" 0 workflow
 ```
 
 ---
@@ -987,7 +988,7 @@ Create or modify `custom_workflow.json` in the project directory:
 Then run:
 ```bash
 cd /path/to/ImageTrans
-... -jar ImageTrans.jar "C:/project/project.itp" 0
+... -jar ImageTrans.jar "C:/project/project.itp" 0 workflow
 ```
 
 ### Recipe 4: Batch Process Multiple PDFs
@@ -1071,7 +1072,7 @@ When you need custom settings not covered by templates:
 
 5. Run subsequent workflows via workflow mode:
    ```bash
-   ... -jar ImageTrans.jar "C:/my_project/1.itp" 0
+   ... -jar ImageTrans.jar "C:/my_project/1.itp" 0 workflow
    ```
 
 ## Troubleshooting
