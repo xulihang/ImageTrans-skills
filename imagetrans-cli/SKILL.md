@@ -181,6 +181,21 @@ ImageTrans has several CLI invocation modes, selected by the number and content 
 **Use this mode when:** You want to process new images/PDFs with zero manual setup.
 The template provides all configuration — OCR engine, translation engine, workflow steps.
 
+**Important — Customizing templates:** When you need to customize a template (e.g., add
+workflow steps, change settings), do NOT modify the original template files directly.
+Instead, copy the template directory to a temporary location, make your changes there,
+and use the temporary copy as the `templateDir` argument. This preserves the original
+templates for future use. Example:
+
+```bash
+# Copy template to a temp directory and customize it
+cp -r templates/manga-ja2en /tmp/manga-custom/
+# Edit the copy, not the original
+# ... edit /tmp/manga-custom/custom_workflow.json ...
+# Use the temp copy
+... -jar ImageTrans.jar "/tmp/manga-custom" "C:/manga/page01.jpg"
+```
+
 **Templates directory:** Templates are stored in `<IMAGETRANS_DIR>/templates/`.
 Common built-in templates include `manga` (for manga/comics translation) and `document`
 (for document/PDF translation). The `templateDir` argument can be an absolute path or
@@ -762,8 +777,14 @@ is pre-configured. When `false`, each page gets its own `.md` file in the `out` 
 
 **Preparation** — the default `manga-ja2en` template workflow only includes
 `Text detection`, `Merge areas`, `Sort`, and `Translation`. It does **not** include
-`Generate translated pictures`. Before running the CLI, edit
-`templates/manga-ja2en/custom_workflow.json` and add
+`Generate translated pictures`. Before running the CLI, copy the template to a
+temporary directory and edit the copy:
+
+```bash
+cp -r templates/manga-ja2en /tmp/manga-ja2en-custom/
+```
+
+Then edit `/tmp/manga-ja2en-custom/custom_workflow.json` and add
 `"Generate translated pictures"` to the end of the `flow` array:
 
 ```json
@@ -776,6 +797,8 @@ is pre-configured. When `false`, each page gets its own `.md` file in the `out` 
 ]
 ```
 
+Then use the temporary copy as the template path in the CLI command below.
+
 **Windows:**
 ```bash
 cd /path/to/ImageTrans
@@ -793,7 +816,7 @@ jre/bin/java.exe \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "templates/manga-ja2en" "C:/manga/chapter01/"
+  -jar ImageTrans.jar "/tmp/manga-ja2en-custom" "C:/manga/chapter01/"
 ```
 
 **Linux (headless):**
@@ -814,7 +837,7 @@ jre/bin/java \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "templates/manga-ja2en" "/home/user/manga/chapter01/"
+  -jar ImageTrans.jar "/tmp/manga-ja2en-custom" "/home/user/manga/chapter01/"
 ```
 
 This imports all images from the directory, runs the manga-ja2en workflow, and exits.
@@ -824,12 +847,18 @@ Translated images are saved to an `out` folder inside the project directory
 ### Recipe 2: Translate a PDF Document and Export as Searchable PDF
 
 **Preparation** — the default `document` template workflow may not include `Export PDF`.
-Before running the CLI, you need to:
+Before running the CLI, copy the template to a temporary directory and edit the copy:
 
-1. Edit `templates/document/custom_workflow.json` and add `"Export PDF"` to the end of
+```bash
+cp -r templates/document /tmp/document-custom/
+```
+
+Then:
+
+1. Edit `/tmp/document-custom/custom_workflow.json` and add `"Export PDF"` to the end of
    the `flow` array (same pattern as Recipe 1).
 
-2. Edit `templates/document/settings.json` and add PDF export options so the CLI runs
+2. Edit `/tmp/document-custom/settings.json` and add PDF export options so the CLI runs
    without popping up a GUI dialog:
    ```json
    {
@@ -838,6 +867,8 @@ Before running the CLI, you need to:
    }
    ```
    See [PDF Export Options Reference](#pdf-export-options-reference) for details on each option.
+
+Then use the temporary copy as the template path in the CLI command below.
 
 **Windows:**
 ```bash
@@ -856,7 +887,7 @@ jre/bin/java.exe \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "templates/document" "C:/docs/japanese_report.pdf"
+  -jar ImageTrans.jar "/tmp/document-custom" "C:/docs/japanese_report.pdf"
 ```
 
 **Linux (headless):**
@@ -877,7 +908,7 @@ jre/bin/java \
   --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
   --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
   --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
-  -jar ImageTrans.jar "templates/document" "/home/user/docs/japanese_report.pdf"
+  -jar ImageTrans.jar "/tmp/document-custom" "/home/user/docs/japanese_report.pdf"
 ```
 
 The output PDF is saved to the `out` folder inside the project directory
