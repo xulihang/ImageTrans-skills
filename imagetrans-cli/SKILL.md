@@ -827,16 +827,65 @@ Translated images are saved to an `out` folder inside the project directory
 
 ### Recipe 2: Translate a PDF Document and Export as Searchable PDF
 
+**Preparation** — the default `document` template workflow may not include `Export PDF`.
+Before running the CLI, you need to:
+
+1. Edit `templates/document/custom_workflow.json` and add `"Export PDF"` to the end of
+   the `flow` array (same pattern as Recipe 1).
+
+2. Edit `templates/document/settings.json` and add PDF export options so the CLI runs
+   without popping up a GUI dialog:
+   ```json
+   {
+     "enable_pdf_export_options": true,
+     "pdf_export_options": "{\"textMode\":1,\"imageMode\":1,\"fontPath\":\"\",\"lookupFontFile\":false,\"displayText\":false,\"addBookmarks\":false,\"enableImageCompression\":false,\"imageFormat\":0,\"jpegQuality\":85,\"adaptive\":false,\"removeNonTextPart\":false,\"byTextArea\":false}"
+   }
+   ```
+   See [PDF Export Options Reference](#pdf-export-options-reference) for details on each option.
+
+**Windows:**
 ```bash
 cd /path/to/ImageTrans
-# Step 1: Use document template to process the PDF
 jre/bin/java.exe \
-  ... \
+  -Djava.library.path=./ \
+  --module-path jre/javafx/lib \
+  --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
+  --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
+  --add-exports javafx.base/com.sun.javafx.collections=ALL-UNNAMED \
+  --add-exports java.desktop/sun.awt=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.bmp=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.gif=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
+  --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
   -jar ImageTrans.jar "templates/document" "C:/docs/japanese_report.pdf"
 ```
 
-If the workflow includes `Export PDF`, the output PDF is generated automatically.
-Otherwise, edit the template's `custom_workflow.json` to add `Export PDF` to the flow.
+**Linux (headless):**
+```bash
+cd /path/to/ImageTrans
+jre/bin/java \
+  -Djava.library.path=./ \
+  -Dglass.platform=headless \
+  --module-path jre/javafx/lib \
+  --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
+  --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
+  --add-exports javafx.base/com.sun.javafx.collections=ALL-UNNAMED \
+  --add-exports java.desktop/sun.awt=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.bmp=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.gif=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
+  --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
+  -jar ImageTrans.jar "templates/document" "/home/user/docs/japanese_report.pdf"
+```
+
+The output PDF is saved to the `out` folder inside the project directory
+(e.g., `C:/docs/japanese_report/japanese_report.pdf`).
 
 ### Recipe 3: Export Translated Images and Markdown from Existing Project
 
