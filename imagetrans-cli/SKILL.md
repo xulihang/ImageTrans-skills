@@ -680,11 +680,32 @@ ImageTrans supports these export formats, all usable from workflows:
 | **TMX** | (GUI) | Translation memory exchange |
 
 **PDF Export Options** (set in project settings `pdf_export_options`):
-- `textMode`: 0=source+target, 1=target only, 2=no text layer
-- `imageMode`: 0=original image, 1=translated image, 2=text-removed image
-- `fontPath`: Path to a font file for the text layer
-- `enableImageCompression`: JPEG compression for images
-- `jpegQuality`: JPEG quality (1-100)
+
+The PDF export options dialog can be bypassed by setting `enable_pdf_export_options` to `true`
+and providing the options JSON in `pdf_export_options`. When `enable_pdf_export_options` is `false`
+or the JSON is invalid, the GUI dialog is shown.
+
+| Option | Type | Values | Description |
+|--------|------|--------|-------------|
+| `textMode` | int | `0` | **Source text** — overlay original OCR text as a searchable text layer |
+| | | `1` | **Target text** — overlay translated text as a searchable text layer |
+| | | `2` | **No text layer** — no searchable text overlay |
+| `imageMode` | int | `0` | **Original image** — use the source image as the page background |
+| | | `1` | **Translated image** — use the rendered translated image |
+| | | `2` | **Text-removed image** — use the inpainted (clean) image |
+| | | `3` | **No image** — text layer only, no background image |
+| `fontPath` | string | file path | Path to a `.ttf` or `.ttc` font file for the PDF text layer. Saved to `PDFFontPath` project setting for reuse. |
+| `lookupFontFile` | bool | `true`/`false` | Map each text box's font style to a corresponding font file via `FontHelper`. When disabled, all text uses the single `fontPath` font. |
+| `displayText` | bool | `true`/`false` | **Display text mode** — converts half-width characters to full-width and applies character replacement rules. Helps vertical text render correctly. |
+| `addBookmarks` | bool | `true`/`false` | Add PDF bookmark outline from `bookmarks.txt` in the project directory (format: `filename: title`, one per line). |
+| `enableImageCompression` | bool | `true`/`false` | Enable image re-compression before embedding in PDF. When disabled, the original image is used as-is. |
+| `imageFormat` | int | `0` | **1-bit PNG** — binarize image (threshold/Otsu/adaptive), output as 1-bit PNG for smallest file size |
+| | | `1` | **8-bit grayscale PNG** — convert to 8-bit grayscale PNG |
+| | | `2` | **JPEG** — compress as JPEG with configurable quality |
+| `jpegQuality` | int | `1`–`100` | JPEG quality level when `imageFormat` is `2` |
+| `adaptive` | bool | `true`/`false` | Use **adaptive thresholding** for binarization (instead of Otsu or fixed threshold). Only applies when `imageFormat` is `0`. |
+| `removeNonTextPart` | bool | `true`/`false` | **Remove non-text parts** — crop the image to only show text regions, leaving the rest white. Useful for clean text-only PDFs. |
+| `byTextArea` | bool | `true`/`false` | **Threshold by text area** — apply binarization only within detected text regions, keeping non-text areas as-is. Only applies when `imageFormat` is `0`.
 
 **Markdown Export Options** (set in project settings `markdown_export_options`):
 - `textMode`: 0=source only, 1=target only, 2=source+target
