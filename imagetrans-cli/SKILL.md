@@ -679,11 +679,50 @@ ImageTrans supports these export formats, all usable from workflows:
 | **XLIFF** | (GUI) | XLIFF translation exchange format |
 | **TMX** | (GUI) | Translation memory exchange |
 
-**PDF Export Options** (set in project settings `pdf_export_options`):
+### Configuring Exports for CLI/Batch Use
 
-The PDF export options dialog can be bypassed by setting `enable_pdf_export_options` to `true`
-and providing the options JSON in `pdf_export_options`. When `enable_pdf_export_options` is `false`
-or the JSON is invalid, the GUI dialog is shown.
+When running via CLI (template mode or workflow mode), exports need proper configuration
+to avoid GUI dialogs blocking the process:
+
+**Translated images** — add `Generate translated pictures` to the workflow's `flow` array.
+No additional settings are required.
+
+**PDF export** — two things are needed:
+
+1. Add `Export PDF` to the workflow's `flow` array.
+2. In the project's `settings.json` (or template's), set `enable_pdf_export_options` to `true`
+   and provide the options in `pdf_export_options`:
+   ```json
+   {
+     "enable_pdf_export_options": true,
+     "pdf_export_options": "{\"textMode\":1,\"imageMode\":0,\"fontPath\":\"\",\"lookupFontFile\":false,\"displayText\":false,\"addBookmarks\":false,\"enableImageCompression\":false,\"imageFormat\":0,\"jpegQuality\":85,\"adaptive\":false,\"removeNonTextPart\":false,\"byTextArea\":false}"
+   }
+   ```
+   Note: `pdf_export_options` is a **JSON string** (serialized JSON), not a nested object.
+   If `enable_pdf_export_options` is `false` or the options string is invalid/missing,
+   a GUI dialog will pop up and block the CLI process.
+
+**Markdown export** — same pattern as PDF:
+
+1. Add `Export markdown` to the workflow's `flow` array.
+2. In the project's `settings.json`, set `enable_markdown_export_options` to `true`
+   and provide the options in `markdown_export_options`:
+   ```json
+   {
+     "enable_markdown_export_options": true,
+     "markdown_export_options": "{\"textMode\":1,\"addPageNumber\":false,\"convertSpecificClassesToImages\":false,\"mergePages\":true}"
+   }
+   ```
+   Note: `markdown_export_options` is a **JSON string** (serialized JSON), not a nested object.
+   If `enable_markdown_export_options` is `false` or the options string is invalid/missing,
+   a GUI dialog will pop up and block the CLI process.
+
+If these settings are not provided in CLI mode, the export steps will either show a GUI
+dialog (blocking) or fail silently.
+
+### PDF Export Options Reference
+
+The `pdf_export_options` value is a JSON string (see previous section for setup) containing:
 
 | Option | Type | Values | Description |
 |--------|------|--------|-------------|
@@ -707,11 +746,19 @@ or the JSON is invalid, the GUI dialog is shown.
 | `removeNonTextPart` | bool | `true`/`false` | **Remove non-text parts** — crop the image to only show text regions, leaving the rest white. Useful for clean text-only PDFs. |
 | `byTextArea` | bool | `true`/`false` | **Threshold by text area** — apply binarization only within detected text regions, keeping non-text areas as-is. Only applies when `imageFormat` is `0`.
 
-**Markdown Export Options** (set in project settings `markdown_export_options`):
-- `textMode`: 0=source only, 1=target only, 2=source+target
-- `addPageNumber`: Insert page number markers
-- `convertSpecificClassesToImages`: Convert certain panel classes to images
-- `mergePages`: Merge all pages into a single markdown file
+**Markdown Export Options** — a JSON string (see previous section for setup) containing:
+
+| Option | Type | Values | Description |
+|--------|------|--------|-------------|
+| `textMode` | int | `0` | **Source only** — export original text |
+| | | `1` | **Target only** — export translated text |
+| | | `2` | **Source + Target** — export both |
+| `addPageNumber` | bool | `true`/`false` | Insert `--- Page N ---` markers between pages |
+| `convertSpecificClassesToImages` | bool | `true`/`false` | Convert panels whose class is in `panel_classes_to_convert_to_image` to inline images instead of text |
+| `mergePages` | bool | `true`/`false` | Merge all pages into a single `.md` file. When `false`, each page gets its own file. |
+
+**Note**: When `mergePages` is `true`, the CLI will show a save dialog unless a path
+is pre-configured. When `false`, output files are saved alongside each image.
 
 ## Recipes: Common Tasks
 
