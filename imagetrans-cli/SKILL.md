@@ -758,7 +758,7 @@ The `pdf_export_options` value is a JSON string (see previous section for setup)
 | `mergePages` | bool | `true`/`false` | Merge all pages into a single `.md` file. When `false`, each page gets its own file. |
 
 **Note**: When `mergePages` is `true`, the CLI will show a save dialog unless a path
-is pre-configured. When `false`, output files are saved alongside each image.
+is pre-configured. When `false`, each page gets its own `.md` file in the `out` folder.
 
 ## Recipes: Common Tasks
 
