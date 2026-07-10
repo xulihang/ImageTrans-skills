@@ -19,10 +19,10 @@ images and PDFs. It can be operated entirely via command line, making it suitabl
 for automation and batch processing.
 
 ### Core capabilities
-- **OCR**: Extract text from images using Tesseract, cloud OCR engines, or specialized manga OCR
-- **Translation**: Machine translate extracted text via multiple engines (Baidu, Google, DeepL, etc.)
+- **OCR**: Extract text from images using PaddleOCR (rapid), cloud OCR engines, or specialized manga OCR
+- **Translation**: Machine translate extracted text via multiple engines (ChatGPT, DeepSeek, Baidu, Google, DeepL, etc.)
 - **Text removal & inpainting**: Remove original text and generate clean backgrounds
-- **Export**: Output translated images, searchable PDFs, Markdown, DOCX, XLIFF, TXT
+- **Export**: Output translated images, searchable PDFs, Markdown, PSD, XLIFF, TXT, etc
 
 ### Architecture
 
@@ -157,7 +157,7 @@ particularly well with Template Mode and Workflow Mode where no user interaction
 
 ## CLI Modes
 
-ImageTrans has four CLI invocation modes, selected by the number and content of arguments.
+ImageTrans has several CLI invocation modes, selected by the number and content of arguments.
 
 ---
 
