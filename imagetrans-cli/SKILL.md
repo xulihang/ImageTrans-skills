@@ -32,9 +32,57 @@ sequence of operations defined in `custom_workflow.json`.
 
 ## Prerequisites
 
-- **Java Runtime**: JRE is bundled at `jre/bin/java.exe` (Windows), `jre/bin/java` (Linux), or `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/bin/java` (macOS)
+- **Java Runtime**: JRE is bundled inside the ImageTrans installation directory
 - **ImageTrans.jar**: The main application JAR in the ImageTrans installation directory
 - **Working directory**: All commands must run from the ImageTrans installation directory (where `ImageTrans.jar` lives)
+
+### Determining the ImageTrans Installation Path
+
+Before running any command, you MUST know the ImageTrans installation directory.
+The path is **persisted across sessions** — the user only needs to provide it once.
+
+Follow this procedure:
+
+1. **Check persisted memory first.** Look for a memory file named `imagetrans-path` in the project memory directory. If found and the path is still valid (`<path>/ImageTrans.jar` exists), use it directly — no need to ask the user.
+
+2. **If no persisted path, check platform default:**
+
+   | Platform | Default installation path |
+   |----------|--------------------------|
+   | macOS    | `/Applications/ImageTrans.app/Contents/Resources/ImageTrans` |
+   | Windows  | (none) |
+   | Linux    | (none) |
+
+   - **macOS**: Try the default path first. If `ImageTrans.jar` exists there, use it and persist it. Only ask the user if the default path doesn't exist.
+   - **Windows / Linux**: Ask the user once:
+     > "请提供 ImageTrans 的安装目录（完整路径）："
+
+3. **Verify the path** — check that `<path>/ImageTrans.jar` exists. If it doesn't, tell the user and ask them to provide the correct path.
+
+4. **Persist the path** — once verified, write a memory file so future sessions can skip this step. Write to `<project-memory-dir>/imagetrans-path.md`:
+   ```markdown
+   ---
+   name: imagetrans-path
+   description: ImageTrans installation directory path
+   metadata:
+     type: project
+   ---
+   
+   The user's ImageTrans installation directory is: `<VERIFIED_PATH>`
+   
+   **Why:** Avoid asking the user for the path on every interaction.
+   **How to apply:** Before running any ImageTrans command, read this memory. If the path no longer exists (e.g., after an update), re-run the discovery flow.
+   ```
+
+5. **Derive JAVA_PATH and JAVAFX_LIB** from `<IMAGETRANS_DIR>`:
+
+   | Platform | `JAVA_PATH` | `JAVAFX_LIB` |
+   |----------|-------------|--------------|
+   | Windows  | `<IMAGETRANS_DIR>/jre/bin/java.exe` | `<IMAGETRANS_DIR>/jre/javafx/lib` |
+   | Linux    | `<IMAGETRANS_DIR>/jre/bin/java` | `<IMAGETRANS_DIR>/jre/javafx/lib` |
+   | macOS    | `<IMAGETRANS_DIR>/jdk-23/Contents/Home/bin/java` | `<IMAGETRANS_DIR>/jdk-23/Contents/Home/javafx/lib` |
+
+6. All subsequent commands use `cd <IMAGETRANS_DIR>` first, then launch with the derived `JAVA_PATH` and `JAVAFX_LIB`.
 
 ### JVM Launch Command
 
@@ -60,13 +108,13 @@ shipped in the ImageTrans directory.
   -jar ImageTrans.jar <ARGS>
 ```
 
-**Platform-specific values:**
+**Platform-specific values** (paths relative to `<IMAGETRANS_DIR>`, see [Determining the ImageTrans Installation Path](#determining-the-imagetrans-installation-path)):
 
 | Platform | `JAVA_PATH` | `JAVAFX_LIB` |
 |----------|-------------|--------------|
 | Windows  | `jre/bin/java.exe` | `jre/javafx/lib` |
 | Linux    | `jre/bin/java` | `jre/javafx/lib` |
-| macOS    | `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/bin/java` | `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/javafx/lib` |
+| macOS    | `jdk-23/Contents/Home/bin/java` | `jdk-23/Contents/Home/javafx/lib` |
 
 **Important**: When building the command for the user, always use the correct paths
 for their OS. Verify the Java path exists before running. If the bundled JRE is not
@@ -836,7 +884,7 @@ When you need custom settings not covered by templates:
 Verify the bundled JRE exists:
 - Windows: `jre/bin/java.exe`
 - Linux: `jre/bin/java`
-- macOS: `/Applications/ImageTrans.app/Contents/Resources/ImageTrans/jdk-23/Contents/Home/bin/java`
+- macOS: `<IMAGETRANS_DIR>/jdk-23/Contents/Home/bin/java` (default: `/Applications/ImageTrans.app/Contents/Resources/ImageTrans`)
 
 If missing, install a Java 11+ JDK with JavaFX and use system `java`.
 
