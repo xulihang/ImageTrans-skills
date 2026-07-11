@@ -1,6 +1,6 @@
 # ImageTrans-skills
 
-Agent skills for ImageTrans. You can use the skills in an AI agent like Claude Code, Codex to use ImageTrans to translate images, perform OCR and convert PDF to markdown, etc.
+Agent skills for ImageTrans. You can use the skills in an AI agent like Claude Code, Codex and OpenClaw to use ImageTrans to translate images, perform OCR and convert PDF to markdown, etc.
 
 ## Installation
 
