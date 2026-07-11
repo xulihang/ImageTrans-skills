@@ -352,14 +352,12 @@ To create a template for a new language pair or use case:
    └── settings.json
    ```
 
-2. **`settings.json`** — Modify the project settings to set source and target languages, and the api preferences to set key and prompt for ChatGPT translation. Example:
+2. **`settings.json`** — Modify the project settings to set source and target languages, and the api preferences (in JSON string) to set key and prompt for ChatGPT translation. Example:
    ```json
    {
       "sourceLang": "ja",
       "targetLang": "en",
-      "api": {
-        "chatGPT": {"key":"api key","batch_prompt":"prompt text"}
-      }
+      "api": "{\"chatGPT\":{\"batch_prompt\":\"prompt\"}}"
    }
    ```
 
