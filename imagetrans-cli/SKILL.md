@@ -705,13 +705,13 @@ The `pdf_import_options` value is a JSON string containing:
 
 | Option | Type | Values | Description |
 |--------|------|--------|-------------|
-| `extractMode` | bool | `true` | **Extract mode** — extract text and images directly from PDF without rendering pages as images. Text is obtained from the PDF's internal text stream. |
-| | | `false` | **Render mode** — render PDF pages as images first, then run OCR on the images. Use this for scanned PDFs or when text extraction is unreliable. |
+| `extractMode` | bool | `true` | **Extract mode** — extract images directly from PDF without rendering pages as images. Use this for scanned PDFs. |
+| | | `false` | **Render mode** — render PDF pages as images. Use this for PDFs with selectable text. |
 | `dpi` | int | e.g., `300` | Resolution (DPI) for rendering PDF pages to images. Only applies in render mode (`extractMode: false`). Higher values give better quality but larger images and slower processing. Typical range: 150–600. |
-| `extractText` | bool | `true`/`false` | Whether to extract text from the PDF. In extract mode, this gets text from the PDF text stream. In render mode, this controls whether OCR is run on the rendered images. |
+| `extractText` | bool | `true`/`false` | Whether to extract text from the PDF. It works regardless of the extract mode. |
 | `wordLevel` | bool | `true`/`false` | **Word-level extraction** — extract text at word granularity instead of line/block level. Only applicable when `extractText` is `true`. Gives finer-grained text boxes. |
-| `pageStart` | int | e.g., `1` | First page to import (1-based). If omitted or `0`, starts from the first page. |
-| `pageEnd` | int | e.g., `10` | Last page to import (1-based). If omitted or less than `pageStart`, imports to the last page. |
+| `pageStart` | int | e.g., `1` | First page to import (1-based). If omitted or `-1`, starts from the first page. |
+| `pageEnd` | int | e.g., `10` | Last page to import (1-based). If omitted or `-1`, imports to the last page. |
 
 **Example — Render mode for scanned PDFs (no text layer):**
 ```json
