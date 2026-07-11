@@ -86,13 +86,37 @@ Follow this procedure:
 
 ### JVM Launch Command
 
-All CLI invocations share the same base command. The `-Djava.library.path=./` flag
-is **required on all platforms** so Java can find native libraries (OpenCV, ONNX Runtime, etc.)
-shipped in the ImageTrans directory.
+All CLI invocations share the same base command.
+
+The `-Djava.library.path=./` flag is **required on Linux and macOS** so Java can find
+native libraries (OpenCV, ONNX Runtime, etc.) shipped in the ImageTrans directory.
+
+**Windows does NOT need this flag.** Windows searches the current directory for DLLs by
+default, and the `-Djava.library.path=./` syntax breaks in PowerShell (`.` is parsed as
+a separate token). **Omit `-Djava.library.path=./` on Windows.**
 
 ```bash
+# Linux / macOS — include -Djava.library.path=./
 <JAVA_PATH> \
   -Djava.library.path=./ \
+  --module-path <JAVAFX_LIB> \
+  --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
+  --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
+  --add-exports javafx.base/com.sun.javafx.collections=ALL-UNNAMED \
+  --add-exports java.desktop/sun.awt=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.bmp=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.gif=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.plugins.wbmp=ALL-UNNAMED \
+  --add-exports java.desktop/com.sun.imageio.spi=ALL-UNNAMED \
+  --add-opens java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED \
+  -jar ImageTrans.jar <ARGS>
+```
+
+**Windows command (omit `-Djava.library.path=./`):**
+```bash
+<JAVA_PATH> \
   --module-path <JAVAFX_LIB> \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -136,6 +160,7 @@ suppress all JavaFX windows:
 Place it alongside the other `-D` flags:
 
 ```bash
+# Linux / macOS
 <JAVA_PATH> \
   -Djava.library.path=./ \
   -Dglass.platform=headless \
@@ -143,6 +168,8 @@ Place it alongside the other `-D` flags:
   ... \
   -jar ImageTrans.jar <ARGS>
 ```
+
+**(Omit `-Djava.library.path=./` on Windows — see [JVM Launch Command](#jvm-launch-command).)**
 
 **When headless mode works (JavaFX 26+ only):**
 - Batch processing — no need to see the GUI while images are being processed
@@ -218,7 +245,6 @@ a path relative to the ImageTrans working directory.
 ```bash
 cd /path/to/ImageTrans
 jre/bin/java.exe \
-  -Djava.library.path=./ \
   --module-path jre/javafx/lib \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -856,7 +882,6 @@ Then use the temporary copy as the template path in the CLI command below.
 ```bash
 cd /path/to/ImageTrans
 jre/bin/java.exe \
-  -Djava.library.path=./ \
   --module-path jre/javafx/lib \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -928,7 +953,6 @@ Then use the temporary copy as the template path in the CLI command below.
 ```bash
 cd /path/to/ImageTrans
 jre/bin/java.exe \
-  -Djava.library.path=./ \
   --module-path jre/javafx/lib \
   --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing \
   --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED \
@@ -1000,7 +1024,6 @@ For each PDF, use the template mode.
 $pdfs = Get-ChildItem "C:/pdfs/*.pdf"
 foreach ($pdf in $pdfs) {
   & jre/bin/java.exe `
-    -Djava.library.path=./ `
     --module-path jre/javafx/lib `
     --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.web,javafx.swing `
     --add-opens javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED `
@@ -1088,9 +1111,10 @@ Verify the bundled JRE exists:
 If missing, install a Java 11+ JDK with JavaFX and use system `java`.
 
 **Native library loading fails (UnsatisfiedLinkError):**
-Ensure `-Djava.library.path=./` is included in the JVM arguments, and verify that
-native libraries (`.dll` on Windows, `.so` on Linux, `.dylib` on macOS) exist in
-the ImageTrans installation directory.
+- **Linux / macOS**: Ensure `-Djava.library.path=./` is included in the JVM arguments.
+- **Windows**: This flag is not needed (Windows searches the current directory for DLLs
+  by default). Verify that native libraries (`.dll`) exist in the ImageTrans
+  installation directory.
 
 **Headless mode issues:**
 `-Dglass.platform=headless` requires **JavaFX 26 or later**. The bundled JRE ships
