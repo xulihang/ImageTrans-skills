@@ -3,8 +3,8 @@ name: imagetrans-cli
 description: >-
   Guide for operating ImageTrans via command line to OCR, translate, and export
   images and PDFs. Use this skill whenever the user wants to batch process images/PDFs
-  through OCR and translation, run automated ImageTrans workflows, start ImageTrans
-  in server mode, export translated images/PDFs/markdown, or perform any ImageTrans
+  through OCR and translation, run automated ImageTrans workflows,
+  export translated images/PDFs/markdown, or perform any ImageTrans
   operation from the command line. Triggers on mentions of ImageTrans, image translation
   automation, manga/comics/document translation CLI, batch OCR translation, or
   generating translated PDFs/markdown from images.
@@ -181,7 +181,6 @@ Place it alongside the other `-D` flags:
 - With the bundled JavaFX 23 — not supported, will error
 - When you need to visually inspect or manually adjust results
 - When using the full GUI for interactive work
-- Server Mode may not function fully in headless mode since JavaFX windows are used internally
 
 ## CLI Modes
 
@@ -298,7 +297,7 @@ cd /path/to/ImageTrans
 **Arguments:**
 - `projectPath`: Path to an existing `.itp` project file
 - `workflowIndex`: Integer index into the `custom_workflow.json` array (0-based)
-- `workflow`: The literal string `"workflow"` — **required**, distinguishes this from Mode 0 (GUI open)
+- `workflow`: The literal string `"workflow"` — **required**
 
 **Behavior:**
 1. Opens the existing project
@@ -321,85 +320,6 @@ export-only workflow.
 ```
 
 ---
-
-### Mode 3: Server Mode (WebSocket API)
-
-```
-<JAVA> ... -jar ImageTrans.jar <projectPath> server
-```
-
-**Arguments:**
-- `projectPath`: Path to an existing `.itp` project file
-- `server`: The literal string `"server"`
-
-**Behavior:**
-1. Opens the project
-2. Starts a WebSocket server at `ws://127.0.0.1:51042/imagetrans`
-3. Also exposes HTTP at `http://127.0.0.1:51042`
-4. The process remains running, accepting WebSocket commands
-
-**Use this mode when:** You need programmatic control, real-time interaction, or
-integration with external tools (e.g., browser extensions, OCR capture workflows).
-
-#### WebSocket Protocol
-
-The server communicates via JSON messages over WebSocket.
-
-**Sending commands (client → server):**
-The server receives commands by listening for function calls from connected clients.
-Commands are dispatched to `wsh_<EventName>(Messages As List)` handlers.
-
-**Core commands:**
-
-| Command | Parameters | Description |
-|---------|-----------|-------------|
-| `TranslateRegion` | `[src, sourceLang, targetLang]` | OCR + translate an image region |
-| `Translate` | `[...]` | Full translation pipeline for an image |
-| `heartbeatReceived` | `[...]` | Keep-alive acknowledgment |
-
-**Server events (server → client):**
-
-| Event | Data | Description |
-|-------|------|-------------|
-| `set_running` | `{running: bool}` | Translation state change |
-| `set_translated` | `{success, output, imgMap}` | Translation completed |
-| `set_name_and_password` | `{name, password}` | Server identity on connect |
-| `close_server` | `{success}` | Server shutdown notification |
-| `keep_alive` | `{...}` | Periodic keep-alive ping |
-
-**Web Client:**
-A web UI is available for server mode:
-- Local: `https://local.basiccat.org:51043`
-- Remote (if configured): `https://service.basiccat.org:51043`
-
-#### Connecting to the Server
-
-When writing automation scripts, connect via WebSocket to `ws://127.0.0.1:51042/imagetrans`,
-then send JSON messages:
-
-```json
-{
-  "type": "event",
-  "event": "TranslateRegion",
-  "params": {
-    "src": "image_path_or_url",
-    "sourceLang": "ja",
-    "targetLang": "zh"
-  }
-}
-```
-
-The server responds with events on the same WebSocket connection.
-
-
-### Mode 0: Open Project (1 Argument, GUI Mode)
-
-```
-<JAVA> ... -jar ImageTrans.jar <projectPath>
-```
-
-Opens the project in the GUI. Not typically used for automation but useful for
-manual inspection after batch processing.
 
 ## Template System
 
@@ -1062,17 +982,7 @@ for pdf in /home/user/pdfs/*.pdf; do
 done
 ```
 
-### Recipe 5: Start Server Mode for External Tool Integration
-
-```bash
-cd /path/to/ImageTrans
-... -jar ImageTrans.jar "C:/project/project.itp" server
-```
-
-The server starts and stays running. External tools can then connect to
-`ws://127.0.0.1:51042/imagetrans` to send translation requests.
-
-### Recipe 6: Create a Project with Custom Settings (Workflow Mode)
+### Recipe 5: Create a Project with Custom Settings (Workflow Mode)
 
 When you need custom settings not covered by templates:
 
