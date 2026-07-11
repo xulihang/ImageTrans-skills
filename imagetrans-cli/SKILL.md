@@ -301,9 +301,10 @@ cd /path/to/ImageTrans
 
 **Behavior:**
 1. Opens the existing project
-2. Executes the workflow at `workflowIndex` from the project's `custom_workflow.json`
-3. Saves the project
-4. Logs `customflow done` and exits
+2. Applies `settings.json` (source/target language, etc.) and `preferences.conf` if present in the project directory
+3. Executes the workflow at `workflowIndex` from the project's `custom_workflow.json`
+4. Saves the project
+5. Logs `customflow done` and exits
 
 **Use this mode when:** You have an existing project and want to run a specific
 workflow on it — e.g., re-run translation with different settings, or run an
