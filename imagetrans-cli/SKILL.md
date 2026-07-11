@@ -745,7 +745,7 @@ The `pdf_export_options` value is a JSON string (see previous section for setup)
 | | | `3` | **No image** — text layer only, no background image |
 | `fontPath` | string | file path | Path to a `.ttf` or `.ttc` font file for the PDF text layer. Saved to `PDFFontPath` project setting for reuse. |
 | `lookupFontFile` | bool | `true`/`false` | Map each text box's font style to a corresponding font file via `FontHelper`. When disabled, all text uses the single `fontPath` font. |
-| `displayText` | bool | `true`/`false` | **Display text mode** — converts half-width characters to full-width and applies character replacement rules. Helps vertical text render correctly. |
+| `displayText` | bool | `true`/`false` | Whether to make the text layer visible in the PDF |
 | `addBookmarks` | bool | `true`/`false` | Add PDF bookmark outline from `bookmarks.txt` in the project directory (format: `filename: title`, one per line). |
 | `enableImageCompression` | bool | `true`/`false` | Enable image re-compression before embedding in PDF. When disabled, the original image is used as-is. |
 | `imageFormat` | int | `0` | **1-bit PNG** — binarize image (threshold/Otsu/adaptive), output as 1-bit PNG for smallest file size |
